@@ -1,9 +1,10 @@
 const ResponseModel = require('../utilities/responseModel');
 const {OAuth2Client} = require('google-auth-library');
-const client = new OAuth2Client("22805011057-sfgcohpdbgp7a0gaq229o0coqlcofrhq.apps.googleusercontent.com");
+const client = new OAuth2Client(process.env.google_id);
 const { User } =require('../models/models');
 
 module.exports = (req, res, next) => {
+  
     if(req.url=='/home'){
         return next();
     }
@@ -21,11 +22,14 @@ module.exports = (req, res, next) => {
         async function verify() {
             const ticket = await client.verifyIdToken({
                 idToken: token,
-                audience: "22805011057-sfgcohpdbgp7a0gaq229o0coqlcofrhq.apps.googleusercontent.com", 
+                audience: process.env.google_id, 
           
             });
            const payload = ticket.getPayload();
-            req.user=payload
+           
+           req.user={email:payload.email}
+            
+            
             
             const user=await User.findOne({where:{email:payload.email}})
             if (user==null){
@@ -49,11 +53,14 @@ module.exports = (req, res, next) => {
                
 
             }
-           
+            
           }
          
           try{
-            verify()
+           verify()
+            
+          
+           
           
          
 
@@ -63,6 +70,6 @@ module.exports = (req, res, next) => {
             return res.status(401).json(new ResponseModel(null, null, ['Unauthorized.']))
           }
         }
-
+        
    
 }
