@@ -30,8 +30,12 @@ const User = sequelize.define('User', {
         allowNull: false,
         unique: true
     },
-    address:{
-        type: DataTypes.STRING(50),
+    image:{
+        type: DataTypes.STRING(1500),
+        allowNull: false,
+    },
+    token:{
+        type: DataTypes.STRING(1500),
         allowNull: false,
     }
 });
