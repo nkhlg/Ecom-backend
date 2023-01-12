@@ -11,7 +11,7 @@ module.exports.profile = async (req, res) => {
         {
             where: {
     
-               email:'nik.gokul@gmail.com'
+               email:req.user.email
             }
         }
     )
