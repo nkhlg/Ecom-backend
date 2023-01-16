@@ -5,12 +5,12 @@ const { Op, Sequelize } = require("sequelize");
 
 
 module.exports.add = async (req, res) => {
+let {name,price,image}=req.body
 
-
-   const val=await Product.create({
-        name: req.body.name,
+  await Product.create({
+        name,
         price: parseInt(req.body.price),
-        image: req.body.image,
+        image
       
 
     }).then(data=>{
@@ -21,50 +21,51 @@ module.exports.add = async (req, res) => {
     
 }
 module.exports.view = async (req, res) => {
-
+     let filter
+     let {min,max,sort}=req.query
     if(req.query)
     {
-        if(req.query.sort=='asc')
+        if(sort=='asc')
         {
-        var filter={order: [ ['price','ASC' ]]}
+        filter={order: [ ['price','ASC' ]]}
         }
-        else if(req.query.sort=='desc')
+        else if(sort=='desc')
         {
-            var filter={order: [ ['price','DESC' ]]} 
+            filter={order: [ ['price','DESC' ]]} 
             
         }
-        if(req.query.min && req.query.max && req.query.sort)   
+        if(min && max && sort)   
         {
-         var filter  = {
+         filter  = {
            where: {
                 price: {
-                  [Op.between]: [parseInt(req.query.min),parseInt(req.query.max)]  
+                  [Op.between]: [parseInt(min),parseInt(max)]  
                 }
               },
-              order: [ ['price',req.query.sort ]]
+              order: [ ['price',sort ]]
     
             }
         }  
-        else if(req.query.min && req.query.sort)   
+        else if(min && sort)   
         {
-         var filter  = {
+         filter  = {
            where: {
                 price: {
-                  [Op.gte]: req.query.min
+                  [Op.gte]: min
                 }
               },
-              order: [ ['price',req.query.sort ]]
+              order: [ ['price',sort ]]
             }
         } 
-        else if(req.query.max && req.query.sort)   
+        else if(max && sort)   
         {
-         var filter  = {
+         filter  = {
            where: {
                 price: {
-                  [Op.lte]: req.query.max
+                  [Op.lte]: max
                 }
               },
-              order: [ ['price',req.query.sort ]]
+              order: [ ['price',sort ]]
             }
         }  
             
